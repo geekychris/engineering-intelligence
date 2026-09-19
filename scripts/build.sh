@@ -84,7 +84,13 @@ initialize_publication_identity() {
   [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || \
     fail "SOURCE_COMMIT must be a full 40-character lowercase Git SHA"
 
-  BUILD_DATE="$(date -u -r "$SOURCE_DATE_EPOCH" +'%Y-%m-%d')"
+  # `date -r EPOCH` is BSD-only; GNU date reads -r as a reference *file*.
+  # python3 is already a hard requirement, so format the stamp with it.
+  BUILD_DATE="$(python3 -c '
+import datetime, sys
+stamp = datetime.datetime.fromtimestamp(int(sys.argv[1]), datetime.timezone.utc)
+print(stamp.strftime("%Y-%m-%d"))
+' "$SOURCE_DATE_EPOCH")"
   BUILD_COMMIT_SHORT="${SOURCE_COMMIT:0:8}"
 
   export SOURCE_DATE_EPOCH SOURCE_COMMIT BUILD_DATE BUILD_COMMIT_SHORT
