@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: all html pdf epub decks diagrams validate test source-validate manifest-validate pages publish clean clean-diagrams clean-pages
+.PHONY: all html pdf epub decks diagrams validate test source-validate manifest-validate pages clean clean-diagrams clean-pages
 
 all:
 	bash scripts/build.sh all
@@ -37,11 +37,11 @@ source-validate:
 manifest-validate:
 	python3 scripts/validate_manifest.py build
 
-pages: all
+# Local preview of exactly what CI publishes to GitHub Pages. Publishing
+# itself happens in .github/workflows/publish-book.yml on every push to
+# main -- there is no manual publish step.
+pages: all decks
 	bash scripts/build-pages.sh build site
-
-publish: pages
-	bash scripts/publish-pages.sh
 
 clean-diagrams:
 	rm -rf build/figures/mermaid
