@@ -147,7 +147,7 @@ jobs:
         run: python3 scripts/validate_manifest.py build "$GITHUB_SHA"
 
       - name: Attach editions to tagged release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             build/engineering-intelligence.html
