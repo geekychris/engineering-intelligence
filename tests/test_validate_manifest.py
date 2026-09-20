@@ -87,8 +87,8 @@ class ManifestValidationTests(unittest.TestCase):
     def test_valid_full_manifest_with_diagram(self) -> None:
         html = self.write_artifact("engineering-intelligence.html", b"<html></html>")
         pdf = self.write_artifact("engineering-intelligence.pdf", b"%PDF-test")
-        (self.build_dir / "figures" / "mermaid" / "system.svg").write_text(
-            "<svg/>", encoding="utf-8"
+        (self.build_dir / "figures" / "mermaid" / "system.png").write_bytes(
+            b"\x89PNG\r\n\x1a\n"
         )
         self.write_manifest(mode="validate", files=[html, pdf], diagram_count=1)
 
@@ -109,8 +109,8 @@ class ManifestValidationTests(unittest.TestCase):
 
     def test_rejects_diagram_count_mismatch(self) -> None:
         artifact = self.write_artifact("engineering-intelligence.html", b"<html></html>")
-        (self.build_dir / "figures" / "mermaid" / "one.svg").write_text(
-            "<svg/>", encoding="utf-8"
+        (self.build_dir / "figures" / "mermaid" / "one.png").write_bytes(
+            b"\x89PNG\r\n\x1a\n"
         )
         self.write_manifest(mode="html", files=[artifact], diagram_count=0)
 

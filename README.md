@@ -6,6 +6,8 @@ _Engineering Intelligence_ is a publication-length AsciiDoc book about measuring
 
 The master publication file is [`book.adoc`](book.adoc). Authoring, evidence, metric, instrumentation, diagram, and review conventions are defined in [`CONTRIBUTING.adoc`](CONTRIBUTING.adoc).
 
+**Read it online: <https://geekychris.github.io/engineering-intelligence/>** — the latest build of the HTML, PDF, and EPUB editions plus every chapter slide deck, republished automatically on each push to `main`.
+
 ## Book structure
 
 - `frontmatter/` — executive summary and reader’s guide
@@ -156,7 +158,25 @@ The image itself defaults to a dedicated unprivileged `publisher` user when no u
 - manually dispatched runs;
 - version tags matching `v*`.
 
-Normal builds have read-only repository access. Tagged builds publish the generated HTML, PDF, and manifest to a GitHub release using a separate least-privilege release job.
+Normal builds have read-only repository access. Tagged builds publish the generated HTML, PDF, EPUB, and manifest to a GitHub release using a separate least-privilege release job.
+
+## Publishing to GitHub Pages
+
+Every push to `main` that builds successfully republishes
+<https://geekychris.github.io/engineering-intelligence/> from a separate
+`deploy-pages` job, which is the only job holding `pages: write`. The site
+carries all three editions, the slide decks, and the build manifest. There is
+no manual publish step.
+
+Preview the exact site locally before pushing:
+
+```bash
+make pages      # builds every edition and deck, then assembles site/
+python3 -m http.server -d site 8000
+```
+
+The Pages source must stay set to **GitHub Actions** (Settings → Pages). The
+older `gh-pages` branch is no longer used or served.
 
 ## Creating a release
 

@@ -5,8 +5,8 @@ type: book
 authors:
   - family-names: Collins
     given-names: Chris
-repository-code: "https://github.com/geekychris/-Engineering-Intelligence"
-url: "https://github.com/geekychris/-Engineering-Intelligence"
+repository-code: "https://github.com/geekychris/engineering-intelligence"
+url: "https://github.com/geekychris/engineering-intelligence"
 version: 0.1.0
 abstract: >-
   Engineering Intelligence presents a quantitative framework for measuring,

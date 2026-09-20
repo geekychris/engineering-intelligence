@@ -84,7 +84,13 @@ initialize_publication_identity() {
   [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || \
     fail "SOURCE_COMMIT must be a full 40-character lowercase Git SHA"
 
-  BUILD_DATE="$(date -u -r "$SOURCE_DATE_EPOCH" +'%Y-%m-%d')"
+  # `date -r EPOCH` is BSD-only; GNU date reads -r as a reference *file*.
+  # python3 is already a hard requirement, so format the stamp with it.
+  BUILD_DATE="$(python3 -c '
+import datetime, sys
+stamp = datetime.datetime.fromtimestamp(int(sys.argv[1]), datetime.timezone.utc)
+print(stamp.strftime("%Y-%m-%d"))
+' "$SOURCE_DATE_EPOCH")"
   BUILD_COMMIT_SHORT="${SOURCE_COMMIT:0:8}"
 
   export SOURCE_DATE_EPOCH SOURCE_COMMIT BUILD_DATE BUILD_COMMIT_SHORT
@@ -103,6 +109,18 @@ validate_sources() {
   python3 "$ROOT/scripts/validate_sources.py" "$ROOT"
 }
 
+# mmdc drives Chrome through puppeteer. Ubuntu 24 CI runners block
+# unprivileged user namespaces via AppArmor, so Chrome cannot sandbox and
+# mmdc dies. Setting MERMAID_PUPPETEER_CONFIG to a puppeteer JSON config
+# (typically {"args": ["--no-sandbox"]}) makes every render use it. Unset
+# on a developer machine, where the sandbox works and should stay on.
+MMDC_PUPPETEER_ARGS=()
+if [[ -n "${MERMAID_PUPPETEER_CONFIG:-}" ]]; then
+  [[ -f "$MERMAID_PUPPETEER_CONFIG" ]] \
+    || fail "MERMAID_PUPPETEER_CONFIG points at a missing file: $MERMAID_PUPPETEER_CONFIG"
+  MMDC_PUPPETEER_ARGS=(--puppeteerConfigFile "$MERMAID_PUPPETEER_CONFIG")
+fi
+
 render_diagrams() {
   local source output
 
@@ -120,6 +138,7 @@ render_diagrams() {
       --output "$output" \
       --backgroundColor transparent \
       --configFile "$MERMAID_CONFIG" \
+      ${MMDC_PUPPETEER_ARGS[@]+"${MMDC_PUPPETEER_ARGS[@]}"} \
       --width 2400 \
       --height 1800 \
       --scale 2 \
