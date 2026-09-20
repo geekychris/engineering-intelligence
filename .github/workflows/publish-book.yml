@@ -90,7 +90,7 @@ jobs:
         run: bash scripts/build-pages.sh build site
 
       - name: Upload publication artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: engineering-intelligence-${{ github.sha }}
           path: |
