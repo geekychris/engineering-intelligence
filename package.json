@@ -9,7 +9,7 @@
     "render-diagrams": "bash scripts/build.sh diagrams"
   },
   "devDependencies": {
-    "@mermaid-js/mermaid-cli": "11.4.2",
+    "@mermaid-js/mermaid-cli": "12.0.0",
     "mathjax-full": "3.2.1"
   }
 }
