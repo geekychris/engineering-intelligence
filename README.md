@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Engineering Intelligence logo" width="180">
+</p>
+
 # Engineering Intelligence
 
 **A Quantitative Framework for Measuring, Understanding, and Optimizing Modern Software Engineering**
